@@ -1,6 +1,3 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
 import os
 from flask import Flask, request, jsonify, url_for
 from flask_cors import CORS
@@ -33,10 +30,31 @@ def sitemap():
 def handle_hello():
     # This is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
-    response_body = {"hello": "world",
-                     "family": members}
+    response_body = members
     return jsonify(response_body), 200
 
+
+@app.route("/members", methods=["POST"])
+def add_member():
+    data = request.get_json()
+    member = jackson_family.add_member(data)
+    return jsonify(member)
+
+
+@app.route("/members/<int:member_id>", methods=["GET"])
+def get_one_people(member_id = None):
+    member = jackson_family.get_member(member_id)
+
+    return jsonify(member), 200
+
+
+@app.route("/members/<int:id>", methods=["DELETE"])
+def delete_member(id=None):
+    member = jackson_family.delete_member(id)
+    
+    if member:
+        return jsonify({"done":True}), 200
+    return jsonify("User not found"), 400
 
 
 # This only runs if `$ python src/app.py` is executed
