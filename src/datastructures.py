@@ -43,29 +43,21 @@ class FamilyStructure:
 
         if "id" not in member:
             member["id"] = self._generate_id()
-
-        if "first_name" not in member or "age" not in member or "lucky_numbers" not in member:
-            raise ValueError("Faltan campos requeridos: first_name, age, lucky_numbers")
         
         if not isinstance(member["age"], int) or member["age"] <= 0:
-            raise ValueError("El campo age debe ser un número entero positivo")
-
-        if not isinstance(member["lucky_numbers"], list) or not all(isinstance(n, int) for n in member["lucky_numbers"]):
-            raise ValueError("lucky_numbers debe ser una lista de enteros")        
+            raise ValueError("the age is can only be a number above 0")
         self._members.append(member)
     
         return member
 
     def delete_member(self, id):
-        
-        member = [item for item in self._members if item["id"] == id]
+        member = next((item for item in self._members if item["id"] == id), None)
         if member:
-            self._members.remove(member[0])
+            self._members.remove(member)
             return True
         return False
 
     def get_member(self, id):
-        
         return next((item for item in self._members if item["id"] == id), [])
 
     def get_all_members(self):
